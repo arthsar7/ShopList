@@ -11,6 +11,11 @@ object ShopListRepositoryImpl : ShopListRepository{
         if(shopItem.id == UNDEFINED_ID) shopItem.id = autoIncrementId++
         shopList.add(shopItem)
     }
+    init {
+        for (i in 0 until 10) {
+            addShopItem(ShopItem("Name $i", i, true))
+        }
+    }
 
     override fun deleteShopItem(shopItem: ShopItem) {
         shopList.remove(shopItem)
