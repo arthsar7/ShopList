@@ -1,5 +1,6 @@
 package ru.student.detected.shoplist.presentation
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -21,6 +22,10 @@ class MainActivity : AppCompatActivity() {
         mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
         mainViewModel.shopList.observe(this) {
             shopListAdapter.submitList(it)
+        }
+        mainBinding.buttonAddShopItem.setOnClickListener {
+            val intent = ShopItemActivity.newIntentAddItem(this)
+            startActivity(intent)
         }
     }
 
@@ -68,7 +73,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupOnShopItemClickListener() {
         shopListAdapter.onShopItemClickListener = {
-            Log.d("ADAPTER", "onShopItemClickListener: $it")
+            val intent : Intent = ShopItemActivity.newIntentEditItem(this, it.id)
+            startActivity(intent)
         }
     }
 
