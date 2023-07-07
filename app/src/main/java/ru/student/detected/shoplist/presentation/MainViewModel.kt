@@ -2,26 +2,26 @@ package ru.student.detected.shoplist.presentation
 
 import androidx.lifecycle.ViewModel
 import ru.student.detected.shoplist.data.ShopListRepositoryImpl
-import ru.student.detected.shoplist.domain.DeleteShopItem
-import ru.student.detected.shoplist.domain.EditShopItem
-import ru.student.detected.shoplist.domain.GetShopList
+import ru.student.detected.shoplist.domain.DeleteShopItemUseCase
+import ru.student.detected.shoplist.domain.EditShopItemUseCase
+import ru.student.detected.shoplist.domain.GetShopListUseCase
 import ru.student.detected.shoplist.domain.ShopItem
 
 class MainViewModel : ViewModel() {
     private val repository = ShopListRepositoryImpl
 
-    private val deleteShopItem = DeleteShopItem(repository)
-    private val editShopItem = EditShopItem(repository)
-    val shopList = GetShopList(repository).getShopList()
+    private val deleteShopItemUseCase = DeleteShopItemUseCase(repository)
+    private val editShopItemUseCase = EditShopItemUseCase(repository)
+    val shopList = GetShopListUseCase(repository).getShopList()
 
     fun deleteShopItem(shopItem: ShopItem) {
-        deleteShopItem.deleteShopItem(shopItem)
+        deleteShopItemUseCase.deleteShopItem(shopItem)
     }
     fun editShopItem(shopItem: ShopItem) {
-        editShopItem.editShopItem(shopItem)
+        editShopItemUseCase.editShopItem(shopItem)
     }
     fun changeEnableState(shopItem: ShopItem){
         val newItem = shopItem.copy(enabled = !shopItem.enabled)
-        editShopItem.editShopItem(newItem)
+        editShopItemUseCase.editShopItem(newItem)
     }
 }

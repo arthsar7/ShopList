@@ -29,7 +29,7 @@ object ShopListRepositoryImpl : ShopListRepository {
     }
 
     override fun editShopItem(shopItem: ShopItem) {
-        shopList[shopList.indexOf(shopList.find { it.id == shopItem.id })] = shopItem
+        shopList.replaceAll { if(shopItem.id == it.id) shopItem else it }
         updateList()
     }
 
