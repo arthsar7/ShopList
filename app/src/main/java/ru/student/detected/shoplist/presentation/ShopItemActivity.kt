@@ -20,9 +20,35 @@ class ShopItemActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         shopItemBinding = ActivityShopItemBinding.inflate(layoutInflater)
         setContentView(shopItemBinding.root)
+        parseIntent()
         shopItemViewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
+
+        val fragment = when (screenMode) {
+            MODE_ADD  -> ShopItemFragment.newInstanceAddItem()
+            MODE_EDIT -> ShopItemFragment.newInstanceEditItem(shopItemId)
+            else      -> throw RuntimeException("Screen mode is unknown: $screenMode")
+        }
+        supportFragmentManager.beginTransaction().add(R.id.shop_item_container, fragment).commit()
+
     }
 
+    private fun parseIntent() {
+        if (!intent.hasExtra(EXTRA_SCREEN_MODE)) {
+            throw RuntimeException("Screen mode params is absent $screenMode")
+        }
+        val mode = intent.getStringExtra(EXTRA_SCREEN_MODE)
+        if (mode != MODE_ADD && mode != MODE_EDIT) {
+            throw RuntimeException("Screen mode is unknown: $mode")
+        }
+        screenMode = mode
+        if (mode == MODE_EDIT) {
+            if (!intent.hasExtra(EXTRA_SHOP_ITEM_ID)) {
+                throw RuntimeException("Param shop item id is absent $shopItemId")
+            } else {
+                shopItemId = intent.getIntExtra(EXTRA_SHOP_ITEM_ID, UNDEFINED_ID)
+            }
+        }
+    }
 
     companion object {
         private const val EXTRA_SCREEN_MODE = "extra_mode"
