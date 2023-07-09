@@ -22,14 +22,20 @@ class ShopItemActivity : AppCompatActivity() {
         setContentView(shopItemBinding.root)
         parseIntent()
         shopItemViewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
-
-        val fragment = when (screenMode) {
-            MODE_ADD  -> ShopItemFragment.newInstanceAddItem()
-            MODE_EDIT -> ShopItemFragment.newInstanceEditItem(shopItemId)
-            else      -> throw RuntimeException("Screen mode is unknown: $screenMode")
+        if(savedInstanceState == null) {
+            launchCurrentMode()
         }
-        supportFragmentManager.beginTransaction().add(R.id.shop_item_container, fragment).commit()
 
+    }
+
+    private fun launchCurrentMode() {
+        val fragment = when (screenMode) {
+            MODE_ADD -> ShopItemFragment.newInstanceAddItem()
+            MODE_EDIT -> ShopItemFragment.newInstanceEditItem(shopItemId)
+            else -> throw RuntimeException("Screen mode is unknown: $screenMode")
+        }
+        supportFragmentManager.beginTransaction().replace(R.id.shop_item_container, fragment)
+            .commit()
     }
 
     private fun parseIntent() {
