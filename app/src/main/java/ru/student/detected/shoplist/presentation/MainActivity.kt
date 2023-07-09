@@ -4,6 +4,8 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
+import androidx.activity.OnBackPressedDispatcher
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.ViewModelProvider
@@ -12,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.student.detected.shoplist.R
 import ru.student.detected.shoplist.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ShopItemFragment.Companion.OnEditingFinishedListener{
     private lateinit var mainViewModel: MainViewModel
     private lateinit var mainBinding: ActivityMainBinding
     private lateinit var shopListAdapter: ShopListAdapter
@@ -28,19 +30,20 @@ class MainActivity : AppCompatActivity() {
             shopListAdapter.submitList(it)
         }
         mainBinding.buttonAddShopItem.setOnClickListener {
-            if(isOnePaneMode()) {
+            if (isOnePaneMode()) {
                 val intent = ShopItemActivity.newIntentAddItem(this)
                 startActivity(intent)
-            }
-            else{
-                launchFragment(ShopItemFragment.newInstanceAddItem())
+            } else {
+                val fragment = ShopItemFragment.newInstanceAddItem()
+                launchFragment(fragment)
             }
         }
     }
 
     private fun isOnePaneMode() = shopItemContainer == null
 
-    private fun launchFragment(fragment: Fragment){
+
+    private fun launchFragment(fragment: Fragment) {
         supportFragmentManager.popBackStack()
         supportFragmentManager.beginTransaction()
             .addToBackStack(null)
@@ -92,11 +95,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupOnShopItemClickListener() {
         shopListAdapter.onShopItemClickListener = {
-            if(isOnePaneMode()) {
+            if (isOnePaneMode()) {
                 val intent: Intent = ShopItemActivity.newIntentEditItem(this, it.id)
                 startActivity(intent)
-            }
-            else{
+            } else {
                 launchFragment(ShopItemFragment.newInstanceEditItem(it.id))
             }
         }
@@ -106,5 +108,10 @@ class MainActivity : AppCompatActivity() {
         shopListAdapter.onShopItemLongClickListener = {
             mainViewModel.changeEnableState(it)
         }
+    }
+
+    override fun onEditingFinished() {
+        Toast.makeText(this@MainActivity, "The edit was saved successfully", Toast.LENGTH_SHORT).show()
+        supportFragmentManager.popBackStack()
     }
 }

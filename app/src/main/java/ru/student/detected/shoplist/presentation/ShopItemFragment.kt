@@ -1,5 +1,6 @@
 package ru.student.detected.shoplist.presentation
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,9 +15,22 @@ import ru.student.detected.shoplist.domain.ShopItem.Companion.UNDEFINED_ID
 
 class ShopItemFragment() : Fragment() {
     private lateinit var shopItemBinding: FragmentShopItemBinding
+
     private lateinit var shopItemViewModel: ShopItemViewModel
+
+    private lateinit var onEditingFinishedListener: OnEditingFinishedListener
+
     private var screenMode: String = MODE_UNKNOWN
     private var shopItemId: Int = UNDEFINED_ID
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnEditingFinishedListener){
+            onEditingFinishedListener = context
+        }
+        else{
+            throw RuntimeException("Activity must implement OnEditingFinishedListener")
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +68,7 @@ class ShopItemFragment() : Fragment() {
 
     private fun observeCloseScreen() {
         shopItemViewModel.closeScreen.observe(viewLifecycleOwner) {
-            activity?.onBackPressedDispatcher?.onBackPressed()
+            onEditingFinishedListener.onEditingFinished()
         }
     }
 
@@ -142,6 +156,9 @@ class ShopItemFragment() : Fragment() {
                     putInt(SHOP_ITEM_ID, id)
                 }
             }
+        }
+        interface OnEditingFinishedListener{
+            fun onEditingFinished()
         }
     }
 }

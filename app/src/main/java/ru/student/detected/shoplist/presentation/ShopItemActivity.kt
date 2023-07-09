@@ -11,7 +11,7 @@ import ru.student.detected.shoplist.R
 import ru.student.detected.shoplist.databinding.ActivityShopItemBinding
 import ru.student.detected.shoplist.domain.ShopItem.Companion.UNDEFINED_ID
 
-class ShopItemActivity : AppCompatActivity() {
+class ShopItemActivity : AppCompatActivity(), ShopItemFragment.Companion.OnEditingFinishedListener{
     private lateinit var shopItemBinding: ActivityShopItemBinding
     private lateinit var shopItemViewModel: ShopItemViewModel
     private var screenMode = MODE_UNKNOWN
@@ -25,7 +25,6 @@ class ShopItemActivity : AppCompatActivity() {
         if(savedInstanceState == null) {
             launchCurrentMode()
         }
-
     }
 
     private fun launchCurrentMode() {
@@ -75,5 +74,9 @@ class ShopItemActivity : AppCompatActivity() {
             intent.putExtra(EXTRA_SHOP_ITEM_ID, id)
             return intent
         }
+    }
+
+    override fun onEditingFinished() {
+        finish()
     }
 }
