@@ -8,18 +8,12 @@ import ru.student.detected.shoplist.domain.ShopListRepository
 import kotlin.random.Random
 
 class ShopListRepositoryImpl(
-    private val application: Application
+    application: Application
 ) : ShopListRepository {
     private val shopListDao = AppDatabase.getInstance(application).shopListDao()
     private val mapper = ShopListMapper()
     override fun addShopItem(shopItem: ShopItem) {
         shopListDao.addShopItem(mapper.mapEntityToDbModel(shopItem))
-    }
-
-    init {
-        for (i in 0 until 10) {
-            addShopItem(ShopItem("Name $i", i, Random.nextBoolean()))
-        }
     }
 
     override fun deleteShopItem(shopItem: ShopItem) {
