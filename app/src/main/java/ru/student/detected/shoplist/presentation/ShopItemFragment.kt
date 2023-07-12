@@ -13,7 +13,7 @@ import ru.student.detected.shoplist.R
 import ru.student.detected.shoplist.databinding.FragmentShopItemBinding
 import ru.student.detected.shoplist.domain.ShopItem.Companion.UNDEFINED_ID
 
-class ShopItemFragment() : Fragment() {
+class ShopItemFragment : Fragment() {
     private lateinit var shopItemBinding: FragmentShopItemBinding
 
     private lateinit var shopItemViewModel: ShopItemViewModel
