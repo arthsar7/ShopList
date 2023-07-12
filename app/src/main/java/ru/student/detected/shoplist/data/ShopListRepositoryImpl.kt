@@ -2,9 +2,8 @@ package ru.student.detected.shoplist.data
 
 import android.app.Application
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.map
 import ru.student.detected.shoplist.domain.ShopItem
-import ru.student.detected.shoplist.domain.ShopItem.Companion.UNDEFINED_ID
 import ru.student.detected.shoplist.domain.ShopListRepository
 import kotlin.random.Random
 
@@ -36,7 +35,12 @@ class ShopListRepositoryImpl(
         return mapper.mapDbModelToEntity(dbModel)
     }
 
-    override fun getShopList(): LiveData<List<ShopItem>> {
-        return shopListDao.getShopList()
-    }
+    override fun getShopList(): LiveData<List<ShopItem>> =
+        shopListDao.getShopList().map { mapper.mapListDbModelToListEntity(it) }
+//        return MediatorLiveData<List<ShopItem>>().apply {
+//            addSource(shopListDao.getShopList()){
+//                value = mapper.mapListDbModelToListEntity(it)
+//            }
+//        }
+//    }
 }
