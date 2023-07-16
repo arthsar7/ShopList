@@ -13,19 +13,26 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import ru.student.detected.shoplist.R
 import ru.student.detected.shoplist.databinding.ActivityMainBinding
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), ShopItemFragment.Companion.OnEditingFinishedListener{
     private lateinit var mainViewModel: MainViewModel
+    private val component by lazy{
+        (application as ShopListApp).component
+    }
+    @Inject
+    lateinit var viewModelFactory: ShopViewModelFactory
     private lateinit var mainBinding: ActivityMainBinding
     private lateinit var shopListAdapter: ShopListAdapter
     private var shopItemContainer: FragmentContainerView? = null
     override fun onCreate(savedInstanceState: Bundle?) {
+        component.inject(this)
         super.onCreate(savedInstanceState)
         mainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mainBinding.root)
         shopItemContainer = mainBinding.shopItemContainer
         setupRecyclerView()
-        mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
+        mainViewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
         mainViewModel.shopList.observe(this) {
             shopListAdapter.submitList(it)
         }

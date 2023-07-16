@@ -3,26 +3,33 @@ package ru.student.detected.shoplist.presentation
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.ViewModelProvider
 import ru.student.detected.shoplist.R
 import ru.student.detected.shoplist.databinding.ActivityShopItemBinding
 import ru.student.detected.shoplist.domain.ShopItem.Companion.UNDEFINED_ID
+import javax.inject.Inject
 
-class ShopItemActivity : AppCompatActivity(), ShopItemFragment.Companion.OnEditingFinishedListener{
+class ShopItemActivity : AppCompatActivity(), ShopItemFragment.Companion.OnEditingFinishedListener {
     private lateinit var shopItemBinding: ActivityShopItemBinding
+
+    @Inject
+    lateinit var shopViewModelFactory: ShopViewModelFactory
     private lateinit var shopItemViewModel: ShopItemViewModel
     private var screenMode = MODE_UNKNOWN
     private var shopItemId = UNDEFINED_ID
+    private val component by lazy{
+        (application as ShopListApp).component
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
+        component.inject(this)
         super.onCreate(savedInstanceState)
         shopItemBinding = ActivityShopItemBinding.inflate(layoutInflater)
         setContentView(shopItemBinding.root)
         parseIntent()
-        shopItemViewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
-        if(savedInstanceState == null) {
+        shopItemViewModel =
+            ViewModelProvider(this, shopViewModelFactory)[ShopItemViewModel::class.java]
+        if (savedInstanceState == null) {
             launchCurrentMode()
         }
     }

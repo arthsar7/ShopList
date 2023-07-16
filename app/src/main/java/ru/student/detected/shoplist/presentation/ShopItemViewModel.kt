@@ -1,23 +1,21 @@
 package ru.student.detected.shoplist.presentation
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
-import ru.student.detected.shoplist.data.ShopListRepositoryImpl
-import ru.student.detected.shoplist.domain.*
+import ru.student.detected.shoplist.domain.AddShopItemUseCase
+import ru.student.detected.shoplist.domain.EditShopItemUseCase
+import ru.student.detected.shoplist.domain.GetShopItemUseCase
+import ru.student.detected.shoplist.domain.ShopItem
+import javax.inject.Inject
 
-class ShopItemViewModel(application: Application) : AndroidViewModel(application) {
-    private val repository = ShopListRepositoryImpl(application)
-    private val getShopItemUseCase = GetShopItemUseCase(repository)
-    private val addShopItemUseCase = AddShopItemUseCase(repository)
-    private val editShopItemUseCase = EditShopItemUseCase(repository)
+class ShopItemViewModel @Inject constructor(
+    private val getShopItemUseCase: GetShopItemUseCase,
+    private val addShopItemUseCase: AddShopItemUseCase,
+    private val editShopItemUseCase: EditShopItemUseCase
+) : ViewModel() {
 
     private val scope = viewModelScope
     val errorInputName: LiveData<Boolean>

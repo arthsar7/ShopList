@@ -12,10 +12,16 @@ import androidx.lifecycle.ViewModelProvider
 import ru.student.detected.shoplist.R
 import ru.student.detected.shoplist.databinding.FragmentShopItemBinding
 import ru.student.detected.shoplist.domain.ShopItem.Companion.UNDEFINED_ID
+import javax.inject.Inject
 
 class ShopItemFragment : Fragment() {
     private lateinit var shopItemBinding: FragmentShopItemBinding
 
+    private val component by lazy {
+        (requireActivity().application as ShopListApp).component
+    }
+    @Inject
+    lateinit var factory: ShopViewModelFactory
     private lateinit var shopItemViewModel: ShopItemViewModel
 
     private lateinit var onEditingFinishedListener: OnEditingFinishedListener
@@ -23,6 +29,7 @@ class ShopItemFragment : Fragment() {
     private var screenMode: String = MODE_UNKNOWN
     private var shopItemId: Int = UNDEFINED_ID
     override fun onAttach(context: Context) {
+        component.inject(this)
         super.onAttach(context)
         if (context is OnEditingFinishedListener){
             onEditingFinishedListener = context
@@ -48,7 +55,7 @@ class ShopItemFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         parseParams()
-        shopItemViewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
+        shopItemViewModel = ViewModelProvider(this, factory)[ShopItemViewModel::class.java]
 
         launchCurrentMode()
 
